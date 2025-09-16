@@ -1,7 +1,4 @@
--- set the path to run code
--- run by using 
--- export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH" psql -U $(whoami) -d postgres -f query.sql
--- replace the `query.sql` with the right file_name
+
 SET search_path = data_bank;
 
 -- Part A. Customer Nodes Exploration
