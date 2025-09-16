@@ -55,31 +55,31 @@ ORDER BY active_customer_count DESC;
 
 
 -- 4. What is the closing balance for each customer at the end of the month?
--- WITH customer_cte AS (
---     SELECT
---         customer_id,
---         EXTRACT(MONTH FROM txn_date) AS month_id,
---         TO_CHAR(txn_date, 'Mon') AS month_name,
---         SUM(
---             CASE 
---                 WHEN txn_type = 'deposit' THEN txn_amount
---                 WHEN txn_type = 'withdrawal' THEN -txn_amount
---                 WHEN txn_type = 'purchase' THEN -txn_amount
---                 ELSE 0
---             END
---         ) AS month_balance
---     FROM customer_transactions
---     GROUP BY customer_id, month_name, month_id
---     ORDER BY customer_id DESC
--- )
+WITH customer_cte AS (
+    SELECT
+        customer_id,
+        EXTRACT(MONTH FROM txn_date) AS month_id,
+        TO_CHAR(txn_date, 'Mon') AS month_name,
+        SUM(
+            CASE 
+                WHEN txn_type = 'deposit' THEN txn_amount
+                WHEN txn_type = 'withdrawal' THEN -txn_amount
+                WHEN txn_type = 'purchase' THEN -txn_amount
+                ELSE 0
+            END
+        ) AS month_balance
+    FROM customer_transactions
+    GROUP BY customer_id, month_name, month_id
+    ORDER BY customer_id DESC
+)
 
--- SELECT
---     customer_id,
---     month_name,
---     month_balance,
---     SUM(month_balance) OVER(PARTITION BY customer_id ORDER BY month_id) AS cumulative_balance
--- FROM customer_cte
--- ORDER BY customer_id ASC;
+SELECT
+    customer_id,
+    month_name,
+    month_balance,
+    SUM(month_balance) OVER(PARTITION BY customer_id ORDER BY month_id) AS cumulative_balance
+FROM customer_cte
+ORDER BY customer_id ASC;
 
 
 -- 5. What is the percentage of customers who increase their closing balance by more than 5%?
